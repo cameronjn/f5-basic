@@ -1,0 +1,100 @@
+---
+
+nodes:
+    - name: node01
+      host: 10.10.10.1
+    - name: node02
+      host: 10.10.10.2
+    - name: node03
+      host: 10.10.10.3
+    - name: node04
+      host: 10.10.10.4
+    - name: node05
+      host: 10.10.10.5
+    - name: node06
+      host: 10.10.10.6
+    - name: node07
+      host: 10.10.10.7
+    - name: node08
+      host: 10.10.10.8
+    - name: node09
+      host: 10.10.10.9
+    - name: node10
+      host: 10.10.10.10
+
+pools:
+    - name: pool01
+      lb_method: ratio_member
+    - name: pool02
+      lb_method: least_connection_member
+    - name: pool03
+      lb_method: ratio_member
+    - name: pool04
+      lb_method: least_connection_member
+    - name: pool05
+      lb_method: ratio_member
+
+poolmembers:
+    - name: node01
+      host: 10.10.10.1
+      pool: pool01
+      port: 80
+    - name: node02
+      host: 10.10.10.2
+      pool: pool01
+      port: 80
+    - name: node03
+      host: 10.10.10.3
+      pool: pool02
+      port: 443
+    - name: node04
+      host: 10.10.10.4
+      pool: pool02
+      port: 443
+    - name: node05
+      host: 10.10.10.5
+      pool: pool03
+      port: 443
+    - name: node06
+      host: 10.10.10.6
+      pool: pool03
+      port: 443
+    - name: node07
+      host: 10.10.10.7
+      pool: pool04
+      port: 80
+    - name: node08
+      host: 10.10.10.8
+      pool: pool04
+      port: 80
+    - name: node09
+      host: 10.10.10.9
+      pool: pool05
+      port: 443
+    - name: node10
+      host: 10.10.10.10
+      pool: pool05
+      port: 443
+
+virtualservers:
+    - name: virtualserver_01
+      destination: 200.100.50.1
+      port: 443
+      pool: pool01
+    - name: virtualserver_02
+      destination: 200.100.50.2
+      port: 443
+      pool: pool02
+    - name: virtualserver_03
+      destination: 200.100.50.3
+      port: 443
+      pool: pool03
+    - name: virtualserver_04
+      destination: 200.100.50.4
+      port: 443
+      pool: pool04
+    - name: virtualserver_05
+      destination: 200.100.50.5
+      port: 443
+      pool: pool05
+

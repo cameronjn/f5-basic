@@ -1,0 +1,66 @@
+---
+
+- name: Create VIPs, pools, pool members and nodes
+  hosts: bigips
+  connection: local
+  gather_facts: no
+
+  tasks:
+      - name: Create nodes
+        bigip_node:
+            state: "present"
+            name: "{{ item.name }}"
+            host: "{{ item.host }}"
+            user: "{{ username }}"
+            password: "{{ password }}"
+            server: "{{ inventory_hostname }}"
+            validate_certs: "{{ validatecerts }}"
+        delegate_to: localhost
+        with_items: "{{ nodes }}"
+
+      - name: Create a pool
+        bigip_pool:
+            lb_method: "{{ item.lb_method }}"
+            name: "{{ item.name }}"
+            password: "{{ password }}"
+            server: "{{ inventory_hostname }}"
+            slow_ramp_time: "120"
+            user: "{{ username }}"
+            validate_certs: "{{ validatecerts }}"
+            state: present
+        delegate_to: localhost
+        with_items: "{{ pools }}"
+
+      - name: Add nodes to pool
+        bigip_pool_member:
+            server: "{{ inventory_hostname }}"
+            user: "{{ username }}"
+            password: "{{ password }}"
+            host: "{{ item.host }}"
+            name: "{{ item.name }}"
+            pool: "{{ item.pool }}"
+            port: "{{ item.port }}"
+            partition: "Common"
+            priority_group: "0"
+            validate_certs: "no"
+            state: present
+        delegate_to: localhost
+        with_items: "{{ poolmembers }}"
+
+      - name: Create VIPs 
+        bigip_virtual_server:
+            server: "{{ inventory_hostname }}"
+            user: "{{ username }}"
+            password: "{{ password }}"
+            name: "{{ item.name }}"
+            destination: "{{ item.destination }}"
+            pool: "{{ item.pool }}"
+            port: " {{ item.port }}"
+            partition: "Common"
+            snat: "Automap"
+            all_profiles: "tcp,http"
+            validate_certs: "{{ validatecerts }}"
+            state: present
+        delegate_to: localhost
+        with_items: "{{ virtualservers }}"
+
